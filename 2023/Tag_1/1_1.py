@@ -1,4 +1,4 @@
-input = open('H:/Projekte/Adventcode/2023/Tag_1/1_1_input.txt', 'r')
+input = open('H:/Projekte/Adventcode/2023/Tag_1/input.txt', 'r')
 value = input.readline()
 result = 0
 res1 = ""
@@ -20,6 +20,8 @@ while (value != ""):
     value = input.readline()
 
 print(result)
+
+
 input.close()
 
 
