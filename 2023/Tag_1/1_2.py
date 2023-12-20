@@ -5,6 +5,7 @@ res1 = ""
 res2 = ""
 firstValue = True
 
+
 stringDigit = {
     "one": 1,
     "two": 2,
@@ -29,23 +30,29 @@ def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
 
+oldvalue = ""
 while (value != ""):
     #print(value)
+    otherValue = value
     seenStringDigits = list(map(lambda elem1: list(map(lambda elem2: (elem2, elem1), list(find_all(value, elem1)))), list(stringDigit.keys())))
     flattened_list = [item for sublist in seenStringDigits for item in sublist]
     sorted(flattened_list)
     if(flattened_list):
         value = value.replace(min(flattened_list)[1], str(stringDigit[min(flattened_list)[1]]), 1)
-        value = rreplace(value, max(flattened_list)[1], str(stringDigit[max(flattened_list)[1]]), 1)
-    #print(value)
+        otherValue = rreplace(otherValue, max(flattened_list)[1], str(stringDigit[max(flattened_list)[1]]), 1)
+    #print(oldvalue + " " + value)
     for i in value:
-        if (firstValue and i.isdigit()):
+        if (i.isdigit()):
             res1 = i
-            res2 = i
-            firstValue = False
-        elif(i.isdigit()):
-            res2 = i
+            break
     
+    for i in otherValue[::-1]:
+        if(i.isdigit()):
+            res2 = i
+            break
+
+
+
     result += int(res1+res2)
 
     firstValue = True
@@ -53,11 +60,10 @@ while (value != ""):
     
 print(result)
 
-
 input.close()
 
 """
-testStringArray = ["two1nine", "eightwothree", "acbone2threexyzthreefourtwo", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen"]
+testStringArray = ["nineight", "eightwothree", "acbone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen"]
 
 for pos, i in enumerate(testString):
     if (firstValue and i.isdigit()):
@@ -71,6 +77,29 @@ for pos, i in enumerate(testString):
 
 #testString.find(stringDigit)
 
+result = 0
+for testString in testStringArray:
+    oldvalue = testString
+    seenStringDigits = list(map(lambda elem1: list(map(lambda elem2: (elem2, elem1), list(find_all(testString, elem1)))), list(stringDigit.keys())))
+    flattened_list = [item for sublist in seenStringDigits for item in sublist]
+    sorted(flattened_list)
+    if(flattened_list):
+        testString = testString.replace(min(flattened_list)[1], str(stringDigit[min(flattened_list)[1]]), 1)
+        testString = rreplace(testString, max(flattened_list)[1], str(stringDigit[max(flattened_list)[1]]), 1)
+    print(oldvalue + " " + testString)
+    for i in testString:
+        if (firstValue and i.isdigit()):
+            res1 = i
+            res2 = i
+            firstValue = False
+        elif(i.isdigit()):
+            res2 = i
+    
+    result += int(res1+res2)
+
+    firstValue = True
+    
+print(result)
 
 for testString in testStringArray:
     for key in stringDigit:
@@ -124,7 +153,7 @@ iteration2 = list(map(lambda elem1:
                 
 print(iteration2)
 flattened_list = [item for sublist in iteration2 for item in sublist]
-print(sorted(flattened_list))"""
+print(sorted(flattened_list))
 
 test = [(3, "cool") , (1, "yeah")]
-print(min(sorted(test)))
+print(min(sorted(test)))"""
