@@ -5,7 +5,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 input_path = os.path.join(current_dir, '..', 'Tag_2', 'input.txt')
 input = open(input_path, 'r')
 value = input.readline()
-print(value)
 numbers = []
 result = 0
 
