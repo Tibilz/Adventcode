@@ -1,18 +1,11 @@
 import os
-import re
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-input_path = os.path.join(current_dir, '..', 'Tag_2', 'input.txt')
+input_path = os.path.join(current_dir, '..', 'Tag_3', 'input.txt')
 input = open(input_path, 'r')
 value = input.readline()
-numbers = []
+tempVal = 1
 result = 0
-
-maxWantedCubes = {
-    "red": 12,
-    "green": 13,
-    "blue": 14
-}
 
 
 def makeTuples(subsets):
@@ -35,6 +28,7 @@ while (value != ""):
         "green": 0,
         "blue": 0
     }
+    tempVal = 1
 
     splitted = value.split(":")
     subsets = splitted[1][1:].split("; ")
@@ -42,13 +36,11 @@ while (value != ""):
     subsets = makeTuples(subsets)
     addTuples(subsets)
 
-    if(foundCubes["red"] <= maxWantedCubes["red"] and foundCubes["green"] <= maxWantedCubes["green"] and foundCubes["blue"] <= maxWantedCubes["blue"]):
-        id = splitted[0]
-        numbers = re.findall(r'\d+', id)
-        result += int(numbers[0])
+    for color, count in foundCubes.items():
+        tempVal *= count
 
+    result += tempVal
     value = input.readline()
-
 
 print(result)
 
