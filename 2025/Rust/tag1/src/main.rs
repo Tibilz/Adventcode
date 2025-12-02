@@ -31,7 +31,7 @@ impl Dial {
 fn main() {
 
     // READ INPUT
-    let data = fs::read_to_string("src/input.txt").unwrap();
+    let data = fs::read_to_string("input.txt").unwrap();
     //println!("{}", data);
     let lines: Vec<&str> = data.lines().collect();
 
