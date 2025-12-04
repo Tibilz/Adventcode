@@ -118,76 +118,33 @@ impl Bank {
         let mut max_pairs:Vec<(u32, u64)> = Vec::new();
 
         let bank: Vec<u32> = self.bank.chars().map(|c| c.to_digit(10).unwrap()).collect::<Vec<u32>>();
-        let mut split_bank = bank.clone();
+        let split_bank = bank.clone();
 
-        max_pairs = recursive_handler(amount_of_batteries, max_pairs, split_bank, 0);
-
-        let mut string_result: String = String::new();
-
-        max_pairs.sort_by(|a, b| a.1.cmp(&b.1));
-        max_pairs.iter().for_each(|x| string_result.push_str(x.0.to_string().as_str()));
-        println!("{}", string_result);
-        string_result.parse::<u64>().unwrap()
-    }
-
-    fn find_highest_number4(self) -> u64 {
-        let mut amount_of_batteries: u8 = 12;
-        let mut missing_batteries = amount_of_batteries.clone();
-        let mut skip_pos= 0;
-        let mut max_pairs:Vec<(u32, u64)> = Vec::new();
-
-        let bank: Vec<u32> = self.bank.chars().map(|c| c.to_digit(10).unwrap()).collect::<Vec<u32>>();
-        let mut split_bank = bank.clone();
-
-        for _i in 0..amount_of_batteries {
-
-            let max = split_bank.iter().max().unwrap().clone();
-            let pos = split_bank.iter().position(|x| x == &max).unwrap() as u64;
-
-            max_pairs.push((max, pos + skip_pos));
-            missing_batteries -= 1;
-
-            let left_places = split_bank.len() - (pos+1) as usize;
-
-            split_bank.remove(pos as usize);
-            let (left, right) = split_bank.split_at(pos as usize);
-
-            if left_places < missing_batteries as usize {
-                split_bank = left.to_vec();
-                missing_batteries = missing_batteries - left_places as u8;
-
-                if left_places > 0 {
-
-                }
-
-            } else {
-                skip_pos += left.len() as u64 + 1;
-                split_bank = right.to_vec();
-
-            }
-        }
-
+        max_pairs = recursive_handler(amount_of_batteries, split_bank, 0);
 
         let mut string_result: String = String::new();
 
         max_pairs.sort_by(|a, b| a.1.cmp(&b.1));
         max_pairs.iter().for_each(|x| string_result.push_str(x.0.to_string().as_str()));
-        println!("{}", string_result);
+        //println!("{}", string_result);
         string_result.parse::<u64>().unwrap()
     }
 
 }
 
 
-pub fn recursive_handler(mut missing_batteries: u8, mut max_pairs: Vec<(u32, u64)>, mut split_bank: Vec<u32>, mut skip_pos: u64) -> Vec<(u32, u64)> {
+// Worst recursion ever
+pub fn recursive_handler(mut missing_batteries: u8, mut split_bank: Vec<u32>, mut skip_pos: u64) -> Vec<(u32, u64)> {
+    let mut max_pairs:Vec<(u32, u64)> = Vec::new();
+
     if missing_batteries == 0 {
         return max_pairs;
     }
 
     let max = split_bank.iter().max().unwrap().clone();
     let pos = split_bank.iter().position(|x| x == &max).unwrap() as u64;
+    let max_abs_pos = skip_pos + pos;
 
-    max_pairs.push((max, pos + skip_pos));
     missing_batteries -= 1;
 
     let left_places = split_bank.len() - (pos+1) as usize;
@@ -195,20 +152,34 @@ pub fn recursive_handler(mut missing_batteries: u8, mut max_pairs: Vec<(u32, u64
     split_bank.remove(pos as usize);
     let (left, right) = split_bank.split_at(pos as usize);
 
+    //Left
     if left_places < missing_batteries as usize {
-        split_bank = left.to_vec();
-        missing_batteries = missing_batteries - left_places as u8;
+        if left_places == 0 {
+            split_bank = left.to_vec();
+            missing_batteries = missing_batteries - left_places as u8;
+        } else {
+            max_pairs.append(&mut recursive_handler(missing_batteries - left_places as u8, left.to_vec(), skip_pos));
+            skip_pos += left.len() as u64 + 1;
+            missing_batteries -= missing_batteries - left_places as u8;
+            split_bank = right.to_vec();
+        }
 
+    // Right
     } else {
+        if right.is_empty() { return vec![(max, max_abs_pos)]; }
         skip_pos += left.len() as u64 + 1;
         split_bank = right.to_vec();
 
     }
-    recursive_handler(missing_batteries, max_pairs, split_bank, skip_pos)
+    max_pairs.append(&mut recursive_handler(missing_batteries, split_bank, skip_pos));
+
+    max_pairs.push((max, max_abs_pos));
+    max_pairs
+
 }
 
 fn main() {
-    let data = fs::read_to_string("test_input.txt").unwrap();
+    let data = fs::read_to_string("input.txt").unwrap();
     //println!("{}", data);
     let lines: Vec<&str> = data.lines().collect();
 
@@ -217,9 +188,8 @@ fn main() {
     for line in lines {
         let bank = Bank::new(line.to_string());
         //println!("{}",bank.find_highest_number2());
-        result += bank.find_highest_number4();
+        result += bank.find_highest_number3();
     }
 
     println!("{}", result);
 }
-// 234234234234278
